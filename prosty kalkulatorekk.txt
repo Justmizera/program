@@ -1,0 +1,99 @@
+using System;
+using Narzedziownia;
+
+namespace prosty_kalkulatorek
+{
+    class Program
+    {
+       
+        static void Main(string[] args)
+        {
+            while (true)
+            {
+
+
+
+                float liczba1 = WprowadzaczDanych.PodajFloat("Podaj pierwszą liczbę");
+
+                string działanie;
+                float wynik = 0.0f;
+
+
+
+                Console.WriteLine("Podaj działanie, które chcesz zastosować: +, -, *, /");
+                działanie = Console.ReadLine();
+
+
+                if (działanie == "+" || działanie == "*" || działanie == "-" || działanie == "/")
+                {
+                    float liczba2 = WprowadzaczDanych.PodajFloat("Podaj drugą liczbę");
+
+                    switch (działanie)
+                    {
+                        case "+":
+                            wynik = liczba1 + liczba2;
+                            break;
+
+                        case "-":
+                            wynik = liczba1 - liczba2;
+                            break;
+                        case "*":
+                            wynik = liczba1 * liczba2;
+                            break;
+                        case "/":
+
+                            if (liczba2 != 0)
+
+                            {
+
+                                wynik = liczba1 / liczba2;
+
+                               
+                                break;
+
+                            }
+                            else
+                            {
+                                Console.WriteLine("Nie można dzelić przez zero");
+                                continue;
+                            }
+
+                           
+                    }
+
+                    Console.WriteLine($"Wynikiem działania {0} {1} {2} jest: " + wynik, liczba1, działanie, liczba2) ;
+
+                }
+
+                else
+                {
+
+                    Console.WriteLine("Podałeś błędny rodzaj działania!");
+
+
+                }
+
+                Console.WriteLine("Jeśli chcesz liczyć dalej kliknij 'k', jeśli chcesz wyjść z programu kliknij 'w'");
+                string odpowiedz = Console.ReadLine();
+
+                switch (odpowiedz)
+                { 
+                    case "k":
+
+                    continue;
+
+                    case "w":
+                        return;
+                   
+                }
+
+
+
+                
+
+            }
+
+            Console.ReadKey();
+        }
+    }
+}
