@@ -1,0 +1,382 @@
+using System;
+using Narzedziownia;
+
+namespace kółko_i_krzyżyk1
+{
+    class Program
+    {
+
+
+        static void Main(string[] args)
+        {
+            
+            string[,] plansza = new string[5, 5];
+
+            for (int i = 1; i < 5; i = i + 2)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    plansza[i, j] = "-";
+                }
+
+            }
+
+            for (int i = 0; i < 5; i = i + 2)
+            {
+                for (int j = 1; j < 5; j++)
+                {
+                    plansza[i, j] = "|";
+                }
+
+            }
+
+            for (int i = 0; i < 5; i = i + 2)
+            {
+                for (int j = 0; j < 5; j = j + 2)
+                {
+                    plansza[i, j] = " ";
+                }
+
+            }
+
+
+            Console.WriteLine("Podaj nazwę gracza x");
+            string gracz1 = Console.ReadLine();
+
+            Console.WriteLine("Podaj nazwę gracza o");
+            string gracz2 = Console.ReadLine();
+
+            string gracz = gracz1;
+
+            Console.WriteLine("Grę rozpoczyna gracz: " + gracz);
+
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    Console.Write(plansza[i, j]);
+                }
+                Console.WriteLine();
+
+            }
+
+            while (true)
+            {
+                while (true)
+                {
+
+
+                    int wspolrzedna1 = WprowadzaczDanych.PodajInt("Wprowadź współrzędne nr. 1: ", 0, 4);
+                    int wspolrzedna2 = WprowadzaczDanych.PodajInt("Wprowadź współrzędne nr. 2: ", 0, 4);
+
+
+                    switch (wspolrzedna1)
+
+                    {
+                        case 1:
+
+                            wspolrzedna1 = 0;
+                            break;
+                        case 2:
+
+                            wspolrzedna1 = 2;
+                            break;
+                        case 3:
+
+                            wspolrzedna1 = 4;
+                            break;
+                    }
+                    switch (wspolrzedna2)
+
+                    {
+                        case 1:
+
+                            wspolrzedna2 = 0;
+                            break;
+                        case 2:
+
+                            wspolrzedna2 = 2;
+                            break;
+                        case 3:
+
+                            wspolrzedna2 = 4;
+                            break;
+                    }
+
+
+                    if (plansza[wspolrzedna2, wspolrzedna1] == " ")
+                    {
+
+                        if (gracz == gracz1)
+                        {
+
+                            plansza[wspolrzedna2, wspolrzedna1] = "x";
+
+                        }
+                        else
+                        {
+
+                            plansza[wspolrzedna2, wspolrzedna1] = "o";
+
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("To pole jest zajęte, wprowadź wartość jeszcze raz");
+                    }
+                    continue;
+                }
+
+               
+                       
+                   
+                   
+
+                        Console.Clear();
+
+                        if (gracz == gracz1)
+                        {
+                            gracz = gracz2;
+                            Console.WriteLine("Ruch gracza: " + gracz2);
+
+                        }
+                        else
+                        {
+                            gracz = gracz1;
+                            Console.WriteLine("Ruch gracza: " + gracz1);
+                        }
+
+
+
+                        for (int i = 0; i < 5; i++)
+                        {
+                            for (int j = 0; j < 5; j++)
+                            {
+                                Console.Write(plansza[i, j]);
+                            }
+                            Console.WriteLine();
+
+                        }
+
+
+                        int sumapkt = 0;
+                        for (int i = 0; i < 5; i = i + 2)
+                        {
+                            for (int j = 0; j < 5; j = j + 2)
+                            {
+
+                                if (plansza[i, j] == "x")
+                                {
+                                    sumapkt = sumapkt + 1;
+                                    continue;
+                                }
+                                else if (plansza[i, j] == "o")
+                                {
+                                    sumapkt = sumapkt - 1;
+                                    continue;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+
+
+                            }
+                            if (sumapkt == 3 || sumapkt == -3)
+                            {
+                                break;
+                            }
+                            else
+                            {
+
+                            }
+                            sumapkt = 0;
+                        }
+
+
+                        if (sumapkt == 3)
+                        {
+                            Console.WriteLine("Wygrał gracz: " + gracz1);
+                            break;
+                        }
+
+                        else if (sumapkt == -3)
+                        {
+                            Console.WriteLine("Wygrał gracz: " + gracz2);
+                            break;
+                        }
+
+                        else
+                        {
+                            sumapkt = 0;
+                            for (int i = 0; i < 5; i = i + 2)
+                            {
+                                for (int j = 0; j < 5; j = j + 2)
+                                {
+
+                                    if (plansza[j, i] == "x")
+                                    {
+                                        sumapkt = sumapkt + 1;
+                                        continue;
+                                    }
+                                    else if (plansza[j, i] == "o")
+                                    {
+                                        sumapkt = sumapkt - 1;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
+
+
+                                }
+                                if (sumapkt == 3 || sumapkt == -3)
+                                {
+                                    break;
+                                }
+                                sumapkt = 0;
+                            }
+                        }
+                        if (sumapkt == 3)
+                        {
+                            Console.WriteLine("Wygrał gracz: " + gracz1);
+                            break;
+                        }
+
+                        else if (sumapkt == -3)
+                        {
+                            Console.WriteLine("Wygrał gracz: " + gracz2);
+                            break;
+                        }
+
+                        sumapkt = 0;
+
+                        for (int i = 0; i < 5; i = i + 2)
+                        {
+                            for (int j = 0; j < 5; j = j + 2)
+                            {
+
+                                if (plansza[0, 0] == "x" && plansza[2, 2] == "x" && plansza[4, 4] == "x")
+                                {
+                                    sumapkt = sumapkt + 1;
+                                    continue;
+                                }
+                                else if (plansza[0, 0] == "o" && plansza[2, 2] == "o" && plansza[4, 4] == "o")
+                                {
+                                    sumapkt = sumapkt - 1;
+                                    continue;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+
+
+                            }
+                            if (sumapkt == 3 || sumapkt == -3)
+                            {
+                                break;
+                            }
+                            else
+                            {
+
+                            }
+                            sumapkt = 0;
+                        }
+                        if (sumapkt == 3)
+                        {
+                            Console.WriteLine("Wygrał gracz: " + gracz1);
+                            break;
+                        }
+
+                        else if (sumapkt == -3)
+                        {
+                            Console.WriteLine("Wygrał gracz: " + gracz2);
+                            break;
+                        }
+
+                        sumapkt = 0;
+                        for (int i = 0; i < 5; i = i + 2)
+                        {
+                            for (int j = 0; j < 5; j = j + 2)
+                            {
+
+                                if (plansza[4, 0] == "x" && plansza[2, 2] == "x" && plansza[0, 4] == "x")
+                                {
+                                    sumapkt = sumapkt + 1;
+                                    continue;
+                                }
+                                else if (plansza[4, 0] == "o" && plansza[2, 2] == "o" && plansza[0, 4] == "o")
+                                {
+                                    sumapkt = sumapkt - 1;
+                                    continue;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+
+
+                            }
+                            if (sumapkt == 3 || sumapkt == -3)
+                            {
+                                break;
+                            }
+                            else
+                            {
+
+                            }
+                            sumapkt = 0;
+                        }
+
+                        if (sumapkt == 3)
+                        {
+                            Console.WriteLine("Wygrał gracz: " + gracz1);
+                            break;
+                        }
+
+                        else if (sumapkt == -3)
+                        {
+                            Console.WriteLine("Wygrał gracz: " + gracz2);
+                            break;
+                        }
+
+                int puste = 0;
+                for (int i = 0; i < 5; i = i + 2)
+                {
+                    for (int j = 0; j < 5; j = j + 2)
+                    {
+
+                        if (plansza[i, j] == " ")
+                        {
+                            puste++;
+                            continue;
+                        }
+
+
+
+                    }
+
+ 
+                }
+                if(puste == 0)
+            
+                {
+                    Console.WriteLine("Remis!!! Koniec gry!!");
+                    break; 
+                }
+
+
+
+
+
+
+            }
+            
+
+            Console.ReadKey();
+        }
+    }
+}
