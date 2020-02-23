@@ -1,0 +1,134 @@
+using System;
+
+namespace srednia_ocen_dla_grup
+{
+    class Program
+    {
+        public static int PodajInt(string a_sTekst, int a_iMin = int.MinValue, int a_iMax = int.MaxValue)
+        {
+            while (true)
+            {
+                try
+                {
+                    Console.Write(a_sTekst);
+
+                    int _iValue = int.Parse(Console.ReadLine());
+
+                    if (_iValue < a_iMin || _iValue > a_iMax)
+                        throw new Exception("Błędny zakres wartości!");
+
+                    return _iValue;
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Błąd!" + e.Message);
+                }
+            }
+        }
+
+        public static float PodajFloat(string a_sTekst, float a_fMin = float.MinValue, float a_fMax = float.MaxValue)
+        {
+            while (true)
+            {
+                try
+                {
+                    Console.Write(a_sTekst);
+
+                    float _fValue = float.Parse(Console.ReadLine());
+
+                    if (_fValue < a_fMin || _fValue > a_fMax)
+                        throw new Exception("Błędny zakres wartości!");
+
+                    return _fValue;
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Błąd!" + e.Message);
+                }
+            }
+        }
+
+        public static string PodajTekst(string a_sTekst, bool a_bCzyPusty = false)
+        {
+            while (true)
+            {
+                try
+                {
+                    string _sResult = Console.ReadLine();
+
+                    if (a_bCzyPusty == false && string.IsNullOrEmpty(_sResult) == true)
+                        throw new Exception("Wartość nie może byc pusta!");
+
+                    return _sResult;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Błąd!" + e.Message);
+                }
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            int i = 0;
+            int j = 0;
+            int c = 0;
+
+            int lstudentow = 0;
+            int ocena = 0;
+            int lgrup = PodajInt("Podaj ilość grup dla której chcesz obliczyć średną ocen: ", 1, 3);
+            int lprzedmiotow = PodajInt("Podaj liczbę przedmiotów dla której chcesz obliczyć średną ocen: ", 2, 4);  
+
+            int[][][] tabgr = new int[lgrup][][];
+                       
+
+            for (i = 1; i <= lgrup; i++)
+            {
+                lstudentow = PodajInt("Podaj liczbę studentów w grupie: " + i + " ", 1, 5);
+
+                tabgr[(i - 1)] = new int[lstudentow][];
+                
+                for (j = 1; j <= lstudentow; j++)
+                {                                   
+
+                    tabgr[i-1][j-1] = new int [lprzedmiotow];
+
+                    for (c = 1; c <= lprzedmiotow; c++)
+                    {
+                        ocena = PodajInt("Podaj ocenę z przedmiotu  nr. " + c + " dla studenta nr: " + j + " wynosi: ",  2, 5);
+
+                        tabgr[(i - 1)][(j-1)][c - 1] = ocena;                                        
+                                              
+                    }
+                }                
+            }
+
+            for (i = 1; i <= lgrup; i++)
+            {            
+                               
+                float suma = 0;
+
+                for (j = 1; j <= lstudentow; j++)
+                {                                     
+
+                    for (c = 1; c <= lprzedmiotow; c++)
+                    {
+                        suma = suma + tabgr[i-1][j-1][c-1];
+
+                    }
+                }
+
+                float srednia = suma / (lstudentow * lprzedmiotow);
+                Console.WriteLine("Średnia ocen studentów z grupy: " + i + " " + "wynosi " + " " + srednia);
+            }
+
+
+            Console.ReadKey();
+        }
+
+        
+    }  
+
+ }
