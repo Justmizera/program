@@ -1,0 +1,163 @@
+using System;
+
+namespace zad1_zjazd_4
+{
+    class Program
+    {
+        public static int PodajInt(string a_sTekst, int a_iMin = int.MinValue, int a_iMax = int.MaxValue)
+        {
+            while (true)
+            {
+                try
+                {
+                    Console.Write(a_sTekst);
+
+                    int _iValue = int.Parse(Console.ReadLine());
+
+                    if (_iValue < a_iMin || _iValue > a_iMax)
+                        throw new Exception("Błędny zakres wartości!");
+
+                    return _iValue;
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Błąd!" + e.Message);
+                }
+            }
+        }
+
+        public static float PodajFloat(string a_sTekst, float a_fMin = float.MinValue, float a_fMax = float.MaxValue)
+        {
+            while (true)
+            {
+                try
+                {
+                    Console.Write(a_sTekst);
+
+                    float _fValue = float.Parse(Console.ReadLine());
+
+                    if (_fValue < a_fMin || _fValue > a_fMax)
+                        throw new Exception("Błędny zakres wartości!");
+
+                    return _fValue;
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Błąd!" + e.Message);
+                }
+            }
+        }
+
+        public static string PodajTekst(string a_sTekst, bool a_bCzyPusty = false)
+        {
+            while (true)
+            {
+                try
+                {
+                    string _sResult = Console.ReadLine();
+
+                    if (a_bCzyPusty == false && string.IsNullOrEmpty(_sResult) == true)
+                        throw new Exception("Wartość nie może byc pusta!");
+
+                    return _sResult;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Błąd!" + e.Message);
+                }
+            }
+        }
+
+        static void RysujPomieszczenie(int Szerokosc, int Dlugosc)
+
+            {
+            Szerokosc = Szerokosc + 2;
+            Dlugosc = Dlugosc + 2;
+
+           
+            int i ;
+            int j ;
+            for (j = 1; j <= Dlugosc; j++)
+            { if (j == 1 || j == Dlugosc)
+                {
+
+                    for (i = 1; i <= Szerokosc; i++)
+                    {
+                        if (i == 1)
+                        {
+                            Console.Write("*");
+                        }
+
+                        else if (i < Szerokosc)
+                        {
+                            Console.Write("-");
+                        }
+
+                        else if (i == Szerokosc)
+                        {
+                            Console.Write("*");
+                        }
+                    }
+
+
+                }
+
+                else if (j < Dlugosc || j > 1)
+                {
+
+                    for (i = 1; i <= Szerokosc; i++)
+                    {
+                        if (i == 1)
+                        {
+                            Console.Write("|");
+                        }
+
+                        else if (i < Szerokosc)
+                        {
+                            Console.Write(".");
+                        }
+
+                        else if (i == Szerokosc)
+                        {
+                            Console.Write("|");
+                        }
+                    }
+                }
+
+
+                    Console.WriteLine();
+                
+            
+            }
+
+
+           
+
+
+
+
+        }
+
+        static void Main(string[] args)
+        {
+          
+        
+            Console.WriteLine("Napisz jakie wymiary ma mieć twoje pomieszczenie, pamiętaj, że długość musi się mieścić w przedziale 2-25, a szerokość 3-40. ");
+
+          int  dlugosc = PodajInt("Podaj długość pomieszczenia: ",2,25);
+
+          int  szerokosc = PodajInt("Podaj szerokość pomieszczenia: ", 3, 40);
+
+            RysujPomieszczenie(szerokosc, dlugosc);
+{
+}
+
+
+
+            Console.ReadKey();
+
+        }
+    }
+}
