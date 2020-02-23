@@ -1,0 +1,70 @@
+using System;
+
+namespace choinka
+{
+    class Program
+    {
+        public static int PodajInt(string a_sTekst, int a_iMin = int.MinValue, int a_iMax = int.MaxValue)
+        {
+            while (true)
+            {
+                try
+                {
+                    Console.Write(a_sTekst);
+
+                    int _iValue = int.Parse(Console.ReadLine());
+
+                    if (_iValue < a_iMin || _iValue > a_iMax)
+                        throw new Exception("Błędny zakres wartości!");
+
+                    return _iValue;
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Błąd!" + e.Message);
+                }
+            }
+        }
+        static void Main(string[] args)
+
+        {
+            int wys = PodajInt("Podaj wysokość rysowanej choinki z zakresu od 1 o 100: " ,1,100);
+            int i = 0;
+            int c = 0;
+            string g = "*";
+                                 
+
+            for (i = 1; i<= wys; i++ )
+            {
+                int a = wys;
+                while (a >= i )
+                {
+                    Console.Write(" " );
+                    a--;
+                }
+
+                int b = 1;
+               
+                while (b <= i+c)
+                {   Console.Write(g);
+                    b++;
+                    
+                }
+                c++;
+                Console.WriteLine();
+            }
+            
+                int d = 1;
+                while (d <= i - 2)
+                {
+                    Console.Write(" ");
+                    d++;
+                }
+            
+            Console.Write("| |");
+
+            Console.ReadKey();
+        }
+    }
+}
