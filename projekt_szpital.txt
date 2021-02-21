@@ -1,0 +1,959 @@
+using System;
+using System.Linq;
+using System.IO;
+using Microsoft.VisualBasic.FileIO;
+using MyOwnLibrary.MojaBiblioteka;
+
+namespace Projekt_obiektówka
+{   
+    class Program
+    {
+        
+
+        public static void Wrocdomenu()
+        {
+            bool fff = true;
+            while (fff)
+            {
+                try
+                {
+                    Console.WriteLine("\n \n Aby wrócić do menu 'm': ");
+                    string k = Console.ReadLine();
+                    if (k != "m")
+                    { throw new czywpisujeszm(); }
+                    else
+                    {
+                        fff = false;
+                    }
+                   
+                }
+                catch (czywpisujeszm )
+                {continue;}
+            }
+        }
+        
+        public string z = "";
+        public static int PodajInt(string a_sTekst, int a_iMin = int.MinValue, int a_iMax = int.MaxValue)
+        {   while (true)
+            {   try
+                {   Console.Write(a_sTekst);
+                    int _iValue = int.Parse(Console.ReadLine());
+                    if (_iValue < a_iMin || _iValue > a_iMax)
+                        throw new Exception("Została podana błędna wartość!");
+                    return _iValue;
+                }
+                catch (Exception)
+                {   Console.Clear();
+                    Console.WriteLine("Została podana błędna wartość!");
+                }
+            }
+        }
+        static void WyswietlListePracownikow( string JakaRola)
+        {   using (TextFieldParser csvParser = new TextFieldParser(@"c:/Temp/Użytkownicy.csv"))
+            {   Console.Clear();
+                Console.WriteLine("Użytkownicy: ");
+                csvParser.CommentTokens = new string[] { "#" };
+                csvParser.SetDelimiters(new string[] { "," });
+                csvParser.HasFieldsEnclosedInQuotes = true;
+                csvParser.ReadLine();
+                if(JakaRola == "Lekarz" | JakaRola == "Pielęgniarka")
+                {   Console.WriteLine("Imię | Nazwisko | Pesel | Uprawnienia | Specjalizacja | Numer PWZ");
+
+                    while (!csvParser.EndOfData)
+                    {
+
+                        string[] fields = csvParser.ReadFields();
+                        string imieZlisty = fields[0];
+                        string nazwiskoZlisty = fields[1];
+                        string rola = fields[5];
+                        string specjalizacja = fields[6];
+                        string PWZ = fields[7];
+                        Console.WriteLine(imieZlisty + " " + nazwiskoZlisty + " " + rola + " " + specjalizacja + " " + PWZ);
+                    }
+                    Wrocdomenu();
+                }
+                else
+                {
+                    Console.WriteLine("Imię | Nazwisko | Pesel | Login | Hasło | Uprawnienia | Specjalizacja | Numer PWZ");
+
+                    while (!csvParser.EndOfData)
+                    {
+                        string[] fields = csvParser.ReadFields();
+                        string imieZlisty = fields[0];
+                        string pesel = fields[2];
+                        string login = fields[3];
+                        string haslo = fields[4];
+                        string nazwiskoZlisty = fields[1];
+                        string rola = fields[5];
+                        string specjalizacja = fields[6];
+                        string PWZ = fields[7];
+                        Console.WriteLine(imieZlisty + " " + nazwiskoZlisty + " " + pesel + " " + login + " " + haslo + " " + rola + " " + specjalizacja + " " + PWZ);                        
+                    }
+                    Wrocdomenu();
+                }                
+            }
+        }
+        static void WyswietlDyzur()
+        {   using (TextFieldParser csvParser = new TextFieldParser(@"c:/Temp/Plan Dyżurów.csv"))
+            {   bool fff = true;
+                while (fff)
+                {   Console.Clear();
+                    Console.WriteLine("PRZYCISK 1       WYŚWIETL DYŻURY WEDŁUG DNIA ");
+                    Console.WriteLine("PRZYCISK 2       WYŚWIETL DYŻURY WEDŁUG UŻYTKOWNIKA ");
+                    Console.WriteLine("PRZYCISK 3       WYJDŻ DO MENU ");
+                    int e = PodajInt("Wybierz opcję: ", 1, 3);
+                    if (e == 1)
+                    {   Console.Clear();
+                        Console.WriteLine("Podaj datę dyżuru, który chcesz wyświetlić: ");
+                        string dd = (PodajInt("Podaj dzień dyżuru: ", 1, 31)).ToString();
+                        if (dd.Length <= 1)
+                        { dd = "0" + dd; }
+                        string mm = (PodajInt("Podaj miesiąc dyżuru: ", 1, 12)).ToString();
+                        if (mm.Length <= 1)
+                        { mm = "0" + mm; }
+                        string rrrr = (PodajInt("Podaj rok dyżuru w formacie 'rrrr': ", 2021, 2099)).ToString();
+                        string dateString = dd + "." + mm + "." + rrrr;
+                        csvParser.CommentTokens = new string[] { "#" };
+                        csvParser.SetDelimiters(new string[] { "," });
+                        csvParser.HasFieldsEnclosedInQuotes = true;
+                        csvParser.ReadLine();
+                        Console.WriteLine("Data | Nazwisko | Uprawnienia | Specjalizacja");
+                        while (!csvParser.EndOfData)
+                        {   string[] fields = csvParser.ReadFields();
+
+                            if (dateString + " 00:00:00" == fields[5])
+                            {   string daa = fields[5];
+                                string nazwiskoZlisty = fields[0];
+                                string rola = fields[2];
+                                string specjalizacja = fields[3];
+                                Console.WriteLine(daa.Substring(0, 10) + " " + nazwiskoZlisty + " " + rola + " " + specjalizacja);
+                             
+                            }
+                        }
+                        Wrocdomenu();
+                        fff = false;
+                    }
+                    else if (e == 2)
+                    {   Console.Clear();
+                        Console.WriteLine("Podaj imię osoby:  ");
+                        string name = Console.ReadLine();
+                        Console.WriteLine("Podaj nazwisko osoby:  ");
+                        string surname = Console.ReadLine();
+                        csvParser.CommentTokens = new string[] { "#" };
+                        csvParser.SetDelimiters(new string[] { "," });
+                        csvParser.HasFieldsEnclosedInQuotes = true;
+                        csvParser.ReadLine();
+                        Console.WriteLine("Data | Imię | Nazwisko | Uprawnienia | Specjalizacja");
+                        while (!csvParser.EndOfData)
+                        {   string[] fields = csvParser.ReadFields();
+                            if (name == fields[0] && surname == fields[1])
+                            {   string daa = fields[5];
+                                string nazwiskoZlisty = fields[1];
+                                string rola = fields[2];
+                                string specjalizacja = fields[3];
+                                Console.WriteLine(daa.Substring(0, 10) + " " + name + " " + nazwiskoZlisty + " " + rola + " " + specjalizacja);
+                            }
+                        }
+                        Wrocdomenu();
+                        fff = false;
+                    }
+                    else if (e == 3)
+                    {fff = false;}
+                }
+            }
+        }
+        static void TworzenieUzytkownika(string typ, string login, string haslo, string path)
+        {   if (typ == "Lekarz")
+            {   string delimiter = ",";
+                if (!File.Exists(@"c:/Temp/Użytkownicy.csv"))
+                {   string createText = "Imię" + delimiter + "Nazwisko" + delimiter + "Pesel" + delimiter + "Login" + delimiter + "Hasło" + delimiter + "Specjalizacja" + delimiter + "PWZ" + delimiter + Environment.NewLine;
+                    File.WriteAllText(path, createText);
+                }
+                Lekarz L = new Lekarz();
+                Console.Clear();
+                Console.WriteLine("Podaj imię użytkownika: ");
+                L.imie = Console.ReadLine();
+                Console.WriteLine("Podaj nazwisko użytkownika: ");
+                L.nazwisko = Console.ReadLine();
+                bool d = true;
+                while(d)
+                {   Console.WriteLine("Podaj pesel użytkownika: ");
+                    L.pesel = Console.ReadLine();
+                    if (L.pesel.Length == 11)
+                    {
+                        if (File.ReadLines(@"c:/Temp/Użytkownicy.csv").Any(line => line.Contains(L.pesel)))
+                        { Console.WriteLine("Użytkownik o podanym peselu już istnieje. Wpisz inny pesel."); }
+                        else
+                        {
+                            L.Login = login;
+                            L.Haslo = haslo;
+                            Console.Clear();
+                            Console.WriteLine("Podaj specjalizację użytkownika: \n \n");
+                            Console.WriteLine("PRZYCISK 1       KARDIOLOG ");
+                            Console.WriteLine("PRZYCISK 2       UROLOG ");
+                            Console.WriteLine("PRZYCISK 3       NEUROLOG ");
+                            Console.WriteLine("PRZYCISK 4       LARYNGOLOG ");
+                            int f = PodajInt("\n \n Wybierz opcję: ", 1, 4);
+                            if (f == 1)
+                            {
+                                L.specjalizacja = "Kardiolog";
+                                Console.WriteLine("Podaj PWZ użytkownika: ");
+                                L.PWZ = Console.ReadLine();
+                                L.rola = typ;
+                                string appendText = L.imie + delimiter + L.nazwisko + delimiter + L.pesel + delimiter + L.Login + delimiter + L.Haslo + delimiter + L.rola + delimiter + L.specjalizacja + delimiter + L.PWZ + delimiter + Environment.NewLine;
+                                File.AppendAllText(path, appendText);
+                                string readText = File.ReadAllText(path);
+                            }
+                            else if (f == 2)
+                            {
+                                L.specjalizacja = "Urolog";
+                                Console.WriteLine("Podaj PWZ użytkownika: ");
+                                L.PWZ = Console.ReadLine();
+                                L.rola = typ;
+                                string appendText = L.imie + delimiter + L.nazwisko + delimiter + L.pesel + delimiter + L.Login + delimiter + L.Haslo + delimiter + L.rola + delimiter + L.specjalizacja + delimiter + L.PWZ + delimiter + Environment.NewLine;
+                                File.AppendAllText(path, appendText);
+                                string readText = File.ReadAllText(path);
+                            }
+                            else if (f == 3)
+                            {
+                                L.specjalizacja = "Neurolog";
+                                Console.WriteLine("Podaj PWZ użytkownika: ");
+                                L.PWZ = Console.ReadLine();
+                                L.rola = typ;
+                                string appendText = L.imie + delimiter + L.nazwisko + delimiter + L.pesel + delimiter + L.Login + delimiter + L.Haslo + delimiter + L.rola + delimiter + L.specjalizacja + delimiter + L.PWZ + delimiter + Environment.NewLine;
+                                File.AppendAllText(path, appendText);
+                                string readText = File.ReadAllText(path);
+                            }
+                            else if (f == 4)
+                            {
+                                L.specjalizacja = "Laryngolog";
+                                Console.WriteLine("Podaj PWZ użytkownika: ");
+                                L.PWZ = Console.ReadLine();
+                                L.rola = typ;
+                                string appendText = L.imie + delimiter + L.nazwisko + delimiter + L.pesel + delimiter + L.Login + delimiter + L.Haslo + delimiter + L.rola + delimiter + L.specjalizacja + delimiter + L.PWZ + delimiter + Environment.NewLine;
+                                File.AppendAllText(path, appendText);
+                                string readText = File.ReadAllText(path);
+                            }
+                            d = false;
+                        }
+                    }
+                    else
+                    { Console.Clear(); Console.WriteLine("Błędna długość peselu. Pesel zawiera 11 znaków."); }
+                }                      
+            }
+            else if (typ == "Pielęgniarka")
+            {   string delimiter = ",";
+                if (!File.Exists(@"c:/Temp/Użytkownicy.csv"))
+                {   string createText = "Imię" + delimiter + "Nazwisko" + delimiter + "Pesel" + delimiter + "Login" + delimiter + "Hasło" + delimiter + delimiter + delimiter + delimiter + Environment.NewLine;
+                    File.WriteAllText(path, createText);
+                }
+                Pielegniarka P = new Pielegniarka();
+                Console.WriteLine("Podaj imię użytkownika: ");
+                P.imie = Console.ReadLine();
+                Console.WriteLine("Podaj nazwisko użytkownika: ");
+                P.nazwisko = Console.ReadLine();
+                bool d = true;
+                while (d)
+                {   Console.WriteLine("Podaj pesel użytkownika: ");
+                    P.pesel = Console.ReadLine();
+                    if (P.pesel.Length == 11)
+                    {   if (File.ReadLines(@"c:/Temp/Użytkownicy.csv").Any(line => line.Contains(P.pesel)))
+                        {Console.WriteLine("Użytkownik o podanym peselu już istnieje. Wpisz inny pesel."); }
+                        else
+                        {   P.Login = login;
+                            P.Haslo = haslo;
+                            P.rola = typ;
+                            string appendText = P.imie + delimiter + P.nazwisko + delimiter + P.pesel + delimiter + P.Login + delimiter + P.Haslo + delimiter + P.rola + delimiter + delimiter + delimiter + Environment.NewLine;
+                            File.AppendAllText(path, appendText);
+                            string readText = File.ReadAllText(path);
+                            d = false;
+                        }
+                    }
+                    else
+                    {Console.Clear();
+                        Console.WriteLine("Błędna długość peselu. Pesel zawiera 11 znaków.");}   
+                }
+            }
+            else if (typ == "Administrator1")
+            {   Administrator A = new Administrator();
+                string delimiter = ",";
+                if (!File.Exists(@"c:/Temp/Użytkownicy.csv"))
+                {   string createText = "Imię" + delimiter + "Nazwisko" + delimiter + "Pesel" + delimiter + "Login" + delimiter + "Hasło" + delimiter + "Rola" + delimiter + "Specjalizacja" + delimiter + "PWZ" + delimiter + Environment.NewLine;
+                    File.WriteAllText(path, createText);
+                    A.imie = "Domyślny";
+                    A.nazwisko = "Administrator";
+                    A.pesel = "00000000000";
+                    A.Login = login;
+                    A.Haslo = haslo;
+                    A.rola = "Administrator";
+                    string appendText = A.imie + delimiter + A.nazwisko + delimiter + A.pesel + delimiter + A.Login + delimiter + A.Haslo + delimiter + A.rola + delimiter + delimiter + delimiter + Environment.NewLine;
+                    File.AppendAllText(path, appendText);
+                    string readText = File.ReadAllText(path);
+                }                                              
+            }
+            else if (typ == "Administrator")
+            {
+                Administrator A = new Administrator();
+                string delimiter = ",";
+                Console.WriteLine("Podaj imię użytkownika: ");
+                A.imie = Console.ReadLine();
+                Console.WriteLine("Podaj nazwisko użytkownika: ");
+                A.nazwisko = Console.ReadLine();
+                bool d = true;
+                while (d)
+                {
+                    Console.WriteLine("Podaj pesel użytkownika: ");
+                    A.pesel = Console.ReadLine();
+                    if (A.pesel.Length == 11)
+                    {
+                        bool dd = true;
+                        while(dd)
+                        { 
+                        {
+                            if (File.ReadLines(@"c:/Temp/Użytkownicy.csv").Any(line => line.Contains(A.pesel)))
+                            {
+                                Console.WriteLine("Użytkownik o podanym peselu już istnieje. Wpisz inny pesel.");
+                            }
+                            else
+                            {
+                                A.Login = login;
+                                A.Haslo = haslo;
+                                A.rola = "Administrator";
+                                string appendText = A.imie + delimiter + A.nazwisko + delimiter + A.pesel + delimiter + A.Login + delimiter + A.Haslo + delimiter + A.rola + delimiter + delimiter + delimiter + Environment.NewLine;
+                                File.AppendAllText(path, appendText);
+                                string readText = File.ReadAllText(path);
+                                dd = false;
+                                d = false;
+                            }
+
+                        }
+                    }
+
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Błędna długość peselu. Pesel zawiera 11 znaków.");
+                    }
+
+                }
+
+            }
+        }
+
+        static void FunkcjaLekarza(string imie, string nazwisko, string pesel, string login, string rola)
+        {
+            bool x = true;
+            while (x)
+            {   Console.Clear();
+                Console.WriteLine("Jesteś zalogowany jako: " + imie + " " + nazwisko + "\n Wybierz jedeną z poniższych opcji: \n  ");
+                Console.WriteLine(" KLAWISZ 1        LISTA UŻYTKOWNIKÓW");
+                Console.WriteLine(" KLAWISZ 2        WYŚWIETL PLAN DYŻURÓW");
+                Console.WriteLine(" KLAWISZ 3        WYŚWIETL MOJE PEŁNE DANE");
+                Console.WriteLine(" KLAWISZ 4        WYLOGUJ SIĘ");
+                Console.WriteLine();
+                int d = PodajInt(" Wybieram klawisz nr.: ", 1, 4);
+                switch (d)
+                {   case 1:
+                        WyswietlListePracownikow("Lekarz");
+                        break;
+                    case 2:
+                        WyswietlDyzur();
+                        break;
+                    case 3:
+                        Uzytkownik.Zalogowany(imie, nazwisko, pesel, login, rola);
+                        break;
+                    case 4:
+                        x = false;
+                        break;
+                }
+            }
+        }
+        static void FunkcjaPielegniarka(string imie, string nazwisko, string pesel,string login, string rola)
+        {
+            bool x = true;
+            while (x)
+            {
+                Console.Clear();
+                Uzytkownik.Zalogowany(imie, nazwisko);
+                Console.WriteLine("\n Wybierz jedeną z poniższych opcji: \n  ");
+                Console.WriteLine(" KLAWISZ 1        LISTA UŻYTKOWNIKÓW");
+                Console.WriteLine(" KLAWISZ 2        WYŚWIETL PLAN DYŻURÓW");
+                Console.WriteLine(" KLAWISZ 3        WYŚWIETL MOJE PEŁNE DANE");
+                Console.WriteLine(" KLAWISZ 4        WYLOGUJ SIĘ");
+                
+                Console.WriteLine();
+                int d = PodajInt(" Wybieram klawisz nr.: ", 1, 4);
+                switch (d)
+                {
+                    case 1:
+                        WyswietlListePracownikow("Pielęgniarka");
+                        break;
+                    case 2:
+                        WyswietlDyzur();
+                        break;
+                    case 3:
+                        Uzytkownik.Zalogowany(imie, nazwisko, pesel, login, rola);
+                        break;
+                    case 4:
+                        x = false;
+                        break;
+                }
+            }
+        }
+
+        static void FunkcjaAdministratora(string imie, string nazwisko)
+            {bool x = true;
+             while(x)
+             {
+                Console.Clear();
+                Console.WriteLine("Jesteś zalogowany jako: " + imie + " " + nazwisko + "\n Wybierz jedeną z poniższych opcji: \n  ");
+                Console.WriteLine(" KLAWISZ 1        LISTA UŻYTKOWNIKÓW");
+                Console.WriteLine(" KLAWISZ 2        STWÓRZ/EDYTUJ PLAN DYŻURÓW");
+                Console.WriteLine(" KLAWISZ 3        WYŚWIETL PLAN DYŻURÓW");
+                Console.WriteLine(" KLAWISZ 4        EDYTUJ DANE UŻYTKOWNIKÓW");
+                Console.WriteLine(" KLAWISZ 5        DODAJ NOWEGO UŻYTKOWNIKA");
+                Console.WriteLine(" KLAWISZ 6        WYLOGUJ SIĘ");
+
+                Console.WriteLine();
+                int d = PodajInt(" Wybieram klawisz nr.: ", 1, 6);
+
+                switch (d)
+                {
+                    case 1:
+                        WyswietlListePracownikow("Administrator");
+                        break;
+
+                    case 2:
+                        string del = ",";
+                        Console.Clear();
+                        Console.WriteLine("PRZYCISK 1       DODAJ DYŻUR ");
+                        Console.WriteLine("PRZYCISK 2       USUŃ DYŻUR ");
+                        int eee = PodajInt("Wybierz opcję: ", 1, 2);
+                        if(eee==1)
+                        {                            
+                            if (!File.Exists(@"c:/Temp/Plan Dyżurów.csv"))
+                            {
+                                // Create a file to write to.
+                                string createText = "Imię" + del + "Nazwisko" + del + "Specjalizacja" + del + "Uprawnienia" + del + "Pesel" + del + "Dzień" + del + Environment.NewLine;
+                                File.WriteAllText(@"c:/Temp/Plan Dyżurów.csv", createText);
+                            }
+                            
+                            bool ddd = true;
+                            while (ddd)
+                            {
+                                Console.Clear();
+                                Console.WriteLine("Podaj pesel pracownika, którego dyżur chcesz stworzyć: ");
+                                string pes = Console.ReadLine();
+                                if (pes.Length == 11)
+                                {
+                                    if (File.ReadLines(@"c:/Temp/Użytkownicy.csv").Any(line => line.Contains(pes)))
+                                    {
+                                        bool y = true;
+                                        while (y)
+                                        {
+                                            Console.Clear();
+                                            Console.WriteLine("Podaj datę dyżuru, który chcesz stworzyć: ");
+                                            string dd = (PodajInt("Podaj dzień dyżuru: ", 1, 31)).ToString();
+                                            string mm = (PodajInt("Podaj miesiąc dyżuru: ", 1, 12)).ToString();
+                                            string rrrr = (PodajInt("Podaj rok dyżuru w formacie 'rrrr': ", 2021, 2099)).ToString();
+                                            var dateString = mm + "/" + dd + "/" + rrrr;
+                                            DateTime date1 = DateTime.Parse(dateString, System.Globalization.CultureInfo.InvariantCulture);
+                                            using (TextFieldParser csvParser = new TextFieldParser(@"c:/Temp/Plan Dyżurów.csv"))
+                                            {
+                                                csvParser.CommentTokens = new string[] { "#" };
+                                                csvParser.SetDelimiters(new string[] { "," });
+                                                csvParser.HasFieldsEnclosedInQuotes = true;
+                                                DateTime nextday = date1.AddDays(1);
+                                                DateTime previousday = date1.AddDays(-1);
+                                                string pkdata = (Convert.ToString(date1));
+                                                string pkdata1 = (Convert.ToString(nextday));
+                                                string pkdataa = (Convert.ToString(previousday));
+                                                                                                
+                                                if ((File.ReadLines(@"c:/Temp/Plan Dyżurów.csv").Any(line => line.Contains(pes + "," + pkdata))) | (File.ReadLines(@"c:/Temp/Plan Dyżurów.csv").Any(line => line.Contains(pes + "," + previousday))) | (File.ReadLines(@"c:/Temp/Plan Dyżurów.csv").Any(line => line.Contains(pes + "," + pkdata1))))
+                                                {
+                                                    Console.WriteLine("Coś poszło nie tak, upewnij się, że pracownik nie ma w tym dniu dyżuru lub nie jest to kolejny dyżur z kolei!");
+                                                }
+                                                else
+                                                {
+                                                    
+                                                    int count = 0;
+                                                    csvParser.ReadLine();
+                                                    while (!csvParser.EndOfData)
+                                                    {
+                                                        string[] fields = csvParser.ReadFields();
+                                                        string dnipracujace = (pes + "," + fields[5]);
+                                                        imie = fields[0];
+                                                        if (Convert.ToInt32(dnipracujace.Substring(15, 2)) == Convert.ToInt32(date1.Month))
+                                                        { count = count + 1; }
+
+                                                    }
+                                                    if (count > 10)
+                                                    {
+                                                        Console.Clear();
+                                                        Console.WriteLine("Jeden pracownik nie może mieć więcej niż 10 dyżurów w danym miesiącu. Limit dyżurów tego pracownika został wyczerpany");
+                                                    }
+                                                    else if (count <= 10)
+                                                    {
+                                                        using (TextFieldParser csvParserr = new TextFieldParser(@"c:/Temp/Użytkownicy.csv"))
+                                                        {
+                                                            csvParserr.CommentTokens = new string[] { "#" };
+                                                            csvParserr.SetDelimiters(new string[] { "," });
+                                                            csvParserr.HasFieldsEnclosedInQuotes = true;
+                                                            while (!csvParserr.EndOfData)
+                                                            {
+                                                                string[] fields = csvParserr.ReadFields();
+                                                                imie = fields[0];
+                                                                if (pes == fields[2])
+                                                                {
+                                                                    imie = fields[0];
+                                                                    nazwisko = fields[1];
+                                                                    string specjalizacja = fields[6];
+                                                                    string PWZ = fields[7];
+                                                                    string rola = fields[5];
+                                                                    if (File.ReadLines(@"c:/Temp/Plan Dyżurów.csv").Any(line => (line.Contains(fields[6]) && line.Contains(pkdata))))
+                                                                    {
+                                                                        Console.WriteLine("Tego dnia pracuje już jeden lekarz o specjalizacji: " +specjalizacja + " dlatego nie możesz dodać tego dyżuru.");
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        string appendText = imie + del + nazwisko + del + specjalizacja + del + rola + del + pes + del + date1 + del + Environment.NewLine;
+                                                                        File.AppendAllText(@"c:/Temp/Plan Dyżurów.csv", appendText);
+                                                                        Console.WriteLine("Dodano poprawnie");
+                                                                    }
+                                                                    
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            Console.WriteLine(" KLAWISZ 1        DODAJ DYŻUR DLA UŻYTKOWNIKA " + pes);
+                                            Console.WriteLine(" KLAWISZ 2        WRÓĆ DO MENU");
+
+                                            Console.WriteLine();
+                                            int k = PodajInt(" Wybieram klawisz nr.: ", 1, 2);
+                                            if (k == 1)
+                                            { continue; }
+                                            else if (k == 2)
+                                            {
+                                                ddd = false;
+                                                y = false;
+                                            }
+                                        }
+
+                                    }
+                                    else
+                                    { Console.WriteLine("Użytkownik o podanym peselu nie istnieje. Wpisz poprawny pesel."); }
+                                }
+                                else
+                                { Console.Clear(); Console.WriteLine("Błędna długość peselu. Pesel zawiera 11 znaków."); }
+                            }
+
+                        }
+                        if (eee==2)
+                        {
+                            string plik1 = "";
+                            Console.Clear();
+                            Console.WriteLine("PRZYCISK 1       USUŃ DANE ");
+                            Console.WriteLine("PRZYCISK 2       WYJDŹ DO MENU GŁÓWNEGO ");
+                            int e = PodajInt("Wybierz opcję: ", 1, 2);
+                            using (TextFieldParser csvParser = new TextFieldParser(@"c:/Temp/Użytkownicy.csv"))
+                            {
+                                if (e == 1)
+                                {
+                                    string podmieniono2 = "";
+                                    bool c = true;
+                                    while (c)
+                                    {
+                                        csvParser.CommentTokens = new string[] { "#" };
+                                        csvParser.SetDelimiters(new string[] { "," });
+                                        csvParser.HasFieldsEnclosedInQuotes = true;
+                                        Console.Clear();
+                                        Console.WriteLine("Podaj pesel użytkownika, którego dyżur chcesz usunąć: ");
+                                        string P = Console.ReadLine();
+                                        while (!csvParser.EndOfData)
+                                        {
+                                            string[] fields = csvParser.ReadFields();
+                                            if (P == fields[2])
+                                            {
+                                                using (TextFieldParser csvPparser = new TextFieldParser(@"c:/Temp/Plan Dyżurów.csv"))
+                                                {
+                                                    string delimiter = ",";
+
+                                                    //  Console.WriteLine("Podaj datę dyżuru, który chcesz usunąć, musi być w formacie dd.mm.rrrr: ");
+                                                    // string dyzurdousuniecia = Console.ReadLine();
+                                                    Console.Clear();
+                                                    Console.WriteLine("Podaj datę dyżuru, który chcesz stworzyć: ");
+                                                    string dd = (PodajInt("Podaj dzień dyżuru: ", 1, 31)).ToString();
+                                                    string mm = (PodajInt("Podaj miesiąc dyżuru: ", 1, 12)).ToString();
+                                                    string rrrr = (PodajInt("Podaj rok dyżuru w formacie 'rrrr': ", 2021, 2099)).ToString();
+                                                    var dateString = mm + "/" + dd + "/" + rrrr;
+                                                    DateTime date1 = DateTime.Parse(dateString, System.Globalization.CultureInfo.InvariantCulture);
+                                                  
+                                                    using (TextFieldParser csvvPparser = new TextFieldParser(@"c:/Temp/Plan Dyżurów.csv"))
+                                                    {
+                                                        while (!csvvPparser.EndOfData)
+                                                        {
+
+                                                            csvvPparser.CommentTokens = new string[] { "#" };
+                                                            csvvPparser.SetDelimiters(new string[] { "," });
+                                                            csvvPparser.HasFieldsEnclosedInQuotes = true;
+                                                            string[] fields3 = csvvPparser.ReadFields();
+                                                            string imiezpliku = fields3[0];
+                                                            string nazwiskozpliku = fields3[1];
+                                                            string specjalizacjazpliku = fields3[2];
+                                                            string rolazpliku = fields3[3];
+                                                            string peselzpliku = fields3[4];
+                                                            string datazpliku = fields3[5];
+
+                                                            string dnipracujace = (peselzpliku + "," + datazpliku);
+                                                            if (dnipracujace != (P + "," + date1))
+                                                            {
+                                                                string text = (imiezpliku + delimiter + nazwiskozpliku + delimiter + specjalizacjazpliku + delimiter + rolazpliku + delimiter + peselzpliku + delimiter + datazpliku + delimiter + Environment.NewLine);
+                                                                plik1 += text;
+                                                                podmieniono2 = "x";
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (podmieniono2 == "x")
+                                        {
+                                            Console.WriteLine("Naciśnij dowolny klawisz aby kontynuować: ");
+                                            Console.ReadKey();
+                                            File.Delete(@"c:/Temp/Plan Dyżurów.csv");
+                                            File.AppendAllText(@"c:/Temp/Plan Dyżurów.csv", plik1);
+                                            c = false;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Coś poszło nie tak, sprawdź czy wpisujesz poprawny pesel");
+                                            Console.WriteLine("Kliknij dowolny przycisk aby wrócić do menu: ");
+                                            Console.ReadKey();
+                                            c = false;
+                                        }
+                                       
+                                    }
+                                }
+                            }
+                            
+                        }
+                        break;
+                    case 3:
+                        WyswietlDyzur();
+                        break;
+
+                    case 4:
+                        string plik = "";
+                        using (TextFieldParser csvParser = new TextFieldParser(@"c:/Temp/Użytkownicy.csv"))
+                        {
+                                Console.Clear();
+                                Console.WriteLine("PRZYCISK 1       PODMIEŃ DANE ");
+                                Console.WriteLine("PRZYCISK 2       WYJDŹ DO MENU GŁÓWNEGO ");
+                                int e = PodajInt("Wybierz opcję: ", 1, 2);
+                                if (e == 1)
+                                {
+                                        string podmieniono = "";
+                                        csvParser.CommentTokens = new string[] { "#" };
+                                        csvParser.SetDelimiters(new string[] { "," });
+                                        csvParser.HasFieldsEnclosedInQuotes = true;
+                                        Console.Clear();
+                                        Console.WriteLine("Podaj pesel użytkownika, którego dane chcesz zmienić: ");
+                                        string P = Console.ReadLine();
+                                
+                                        while (!csvParser.EndOfData)
+                                        {
+                                            
+                                            string delimiter = ",";
+                                            string[] fields = csvParser.ReadFields();
+                                            string pesel = fields[2];
+
+                                            if (P == pesel)
+                                            {
+                                               
+                                                            string imieZlisty = fields[0];
+                                                            string nazwiskoZlisty = fields[1];
+                                                            string hasloZlisty = fields[4];
+                                                            string loginZlisty = fields[3];
+                                                            string rola = fields[5];
+                                                            string specjalizacja = fields[6];
+                                                            string PWZ = fields[7];
+
+                                                            Console.Clear();
+                                                            Console.WriteLine(imieZlisty + " " + nazwiskoZlisty + " " + pesel + " " + rola + " " + specjalizacja + " " + PWZ);
+                                                            Console.WriteLine("Wybierz informację, którą chcesz edytować: ");
+                                                            Console.WriteLine("KLAWISZ 0        IMIĘ ");
+                                                            Console.WriteLine("KLAWISZ 1        NAZWISKO ");
+                                                            Console.WriteLine("KLAWISZ 2        PESEL ");
+                                                            Console.WriteLine("KLAWISZ 3        LOGIN ");
+                                                            Console.WriteLine("KLAWISZ 4        HASŁO ");
+                                                            Console.WriteLine("KLAWISZ 5        ROLA ");
+                                                            Console.WriteLine("KLAWISZ 6        SPECJALIZACJA ");
+                                                            Console.WriteLine("KLAWISZ 7        PWZ ");
+
+                                                            int o = PodajInt("Wybieram klawisz nr.: ", 0, 7);
+                                                            string G = "";
+
+                                                            switch (o)
+                                                            {
+                                                                case 0:
+
+                                                                    Console.WriteLine("Podaj nową wartość imienia: ");
+                                                                    G = Console.ReadLine();
+                                                                    string text = (imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    text = text.Replace(text, G + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    plik += text;
+                                                                    podmieniono = "x";
+
+                                                                    break;
+
+                                                                case 1:
+
+                                                                    Console.WriteLine("Podaj nową wartość nazwiska: ");
+                                                                    G = Console.ReadLine();
+                                                                    string text1 = (imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    text1 = text1.Replace(text1, imieZlisty + delimiter + G + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    plik += text1;
+                                                                    podmieniono = "x";
+
+                                                                    break;
+                                                                case 2:
+
+                                                                    Console.WriteLine("Podaj nową wartość peselu: ");
+                                                                    G = Console.ReadLine();
+                                                                    string text2 = (imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    text2 = text2.Replace(text2, imieZlisty + delimiter + nazwiskoZlisty + delimiter + G + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    plik += text2;
+                                                                    podmieniono = "x";
+
+                                                                    break;
+                                                                case 3:
+
+                                                                    Console.WriteLine("Podaj nowy login: ");
+                                                                    G = Console.ReadLine();
+                                                                    string text3 = (imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    text3 = text3.Replace(text3, imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + G + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    plik += text3;
+                                                                    podmieniono = "x";
+
+                                                                    break;
+                                                                case 4:
+
+                                                                    Console.WriteLine("Podaj nowe hasło: ");
+                                                                    G = Console.ReadLine();
+                                                                    string text4 = (imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    text4 = text4.Replace(text4, imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + G + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    plik += text4;
+                                                                    podmieniono = "x";
+
+                                                                    break;
+                                                                case 5:
+                                                                    bool f = true;
+                                                                    while(f)
+                                                                    {
+                                                                        Console.WriteLine("Podaj nową rolę: ");
+                                                                        G = Console.ReadLine();
+                                                                        if (G == "Administrator" || G == "Lekarz" || G == "Pielegniarka")
+                                                                        {
+                                                                            string text5 = (imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                            text5 = text5.Replace(text5, imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + G + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                            plik += text5;
+                                                                            podmieniono = "x";
+                                                                            f = false;
+                                                                        }
+
+                                                                        else
+                                                                        {
+                                                                            Console.WriteLine("Podano błędą wartość. Rolą może być: Administrator, Lekarz, Pielęgniarka. ");
+                                                                        }
+
+                                                                    }
+
+                                                                    break;
+                                                                case 6:
+
+                                                                    Console.WriteLine("Podaj nowe hasła: ");
+                                                                    G = Console.ReadLine();
+                                                                    string text6 = (imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    text6 = text6.Replace(text6, imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + G + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    plik += text6;
+                                                                    podmieniono = "x";
+
+                                                                    break;
+                                                                case 7:
+
+                                                                    Console.WriteLine("Podaj nowy numer PWZ: ");
+                                                                    G = Console.ReadLine();
+                                                                    string text7 = (imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + PWZ + delimiter + Environment.NewLine);
+                                                                    text7 = text7.Replace(text7, imieZlisty + delimiter + nazwiskoZlisty + delimiter + pesel + delimiter + loginZlisty + delimiter + hasloZlisty + delimiter + rola + delimiter + specjalizacja + delimiter + G + delimiter + Environment.NewLine);
+                                                                    plik += text7;
+                                                                    podmieniono = "x";
+
+                                                                    break;
+
+
+                                        }
+                                                    Console.WriteLine("Ten punkt kodu");
+
+                                            }
+                                                        // Read current line fields, pointer moves to the next line.
+                                                        else                                                       
+                                                        {
+                                                            plik += (fields[0] + delimiter + fields[1] + delimiter + fields[2] + delimiter + fields[3] + delimiter + fields[4] + delimiter + fields[5] + delimiter + fields[6] + delimiter + fields[7] + delimiter + Environment.NewLine);
+
+                                                        }
+                                                    
+                                                
+                                                
+                                            
+
+
+                                        }
+                                }
+                        }
+                        File.Delete(@"c:/Temp/Użytkownicy.csv");
+                        File.AppendAllText(@"c:/Temp/Użytkownicy.csv", plik);
+                        break;
+
+                    case 5:                        
+                            bool z = true;
+                                while (z)
+                                {
+                                    Console.Clear();
+                                    Console.WriteLine("Tworzysz nowego użytkownika \n Podaj Login");
+
+                                    string Login = Console.ReadLine();
+                                    if (File.ReadLines(@"c:/Temp/Użytkownicy.csv").Any(line => line.Contains("," + Login + ",")))
+                                    {
+                                        Console.WriteLine("Użytkownik o podanej nazwie już istnieje. Wpisz inny login.");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Podaj Hasło");
+                                        string Haslo = Console.ReadLine();
+                                        Console.WriteLine("Każdy użytkownik posiada jeden z typów uprawnień: Lekarz, Pielęgniarka, Administarator. \n Wybierz typ uprawnień dla nowo stworzonego pracownika: ");
+                                        Console.Clear();
+                                        Console.WriteLine("PRZYCISK 1       LEKARZ ");
+                                        Console.WriteLine("PRZYCISK 2       PIELĘGNIARKA ");
+                                        Console.WriteLine("PRZYCISK 3       ADMINISTRATOR ");
+                                        int f = PodajInt("Wybierz opcję: ", 1, 3);
+                                        if (f==1)
+                                        {TworzenieUzytkownika("Lekarz", Login, Haslo, @"c:/Temp/Użytkownicy.csv");}
+                                        else if(f==2)
+                                        {TworzenieUzytkownika("Pielęgniarka", Login, Haslo, @"c:/Temp/Użytkownicy.csv");}
+                                        else if (f == 3)
+                                        {TworzenieUzytkownika("Administrator", Login, Haslo, @"c:/Temp/Użytkownicy.csv");}
+                                    }
+
+                                    Console.Clear();
+                                    Console.WriteLine("Użytkownik został dodany poprawnie. \n Aby dodać nowego użytkownika wprować 'd', aby zakońćzyć dodawanie użytkowników wprowadź inny dowolny znak");
+                                    string znak = Console.ReadLine();
+                                    if (znak == "d")
+                                    {z = true;}
+                                    else
+                                    {z = false;}
+                                }
+                        break;
+
+                    case 6:
+                        x = false;
+                        break;
+                } 
+              }
+         }
+
+        static void Main(string[] args)
+        {   if (!Directory.Exists(@"c:/Temp"))
+            { Directory.CreateDirectory(@"c:/Temp"); }
+            TworzenieUzytkownika("Administrator1", "Admin", "Admin", @"c:/Temp/Użytkownicy.csv");
+            
+            bool q = true;
+            while(q)
+            {   Console.Clear();
+                
+                Console.WriteLine("KLAWISZ 1        ZALOGUJ SIĘ");
+                Console.WriteLine("KLAWISZ 2        WYJDŹ Z PROGRAMU");
+                int e = PodajInt("Wybierz opcję: ",1,2);
+                if(e==1)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Podaj swój login: ");
+                    string L = Console.ReadLine();
+                    Console.Clear();
+                    Console.WriteLine("Podaj swoje hasło: ");
+                    string H = Console.ReadLine();
+
+                    string imie = "X";
+                    string nazwisko = "";
+                    string pesel = "";
+                    string rola = "";
+                    string login = "";
+                    string specjalizacja = "";
+                    string PWZ = "";
+
+                    using (TextFieldParser csvParser = new TextFieldParser(@"c:/Temp/Użytkownicy.csv"))
+                    {
+                        csvParser.CommentTokens = new string[] { "#" };
+                        csvParser.SetDelimiters(new string[] { "," });
+                        csvParser.HasFieldsEnclosedInQuotes = true;
+                        
+                        while (!csvParser.EndOfData)
+                        {
+                            // Read current line fields, pointer moves to the next line.
+                            string[] fields = csvParser.ReadFields();
+                            login = fields[3];
+                            string Haslo = fields[4];
+                            if (L == login && H == Haslo)
+                            {
+                                imie = fields[0];
+                                nazwisko = fields[1];
+                                pesel = fields[2];
+                                rola = fields[5];
+                                specjalizacja = fields[6];
+                                PWZ = fields[7];
+                            }
+
+                        }
+                    }
+                    if (rola == "Administrator")
+                    {   Administrator User = new Administrator();
+                        User.imie = imie;
+                        User.nazwisko = nazwisko;
+                        User.pesel = pesel;
+                        User.rola = rola;
+                        User.Login = L;
+                        
+                        FunkcjaAdministratora(imie, nazwisko);
+                    }
+                    else if (rola == "Pielęgniarka")
+                    {   Pielegniarka User = new Pielegniarka();
+                        User.imie = imie;
+                        User.nazwisko = nazwisko;
+                        User.pesel = pesel;
+                        User.rola = rola;
+                        User.Login = L;
+                        FunkcjaPielegniarka(imie, nazwisko, pesel, L, rola);
+                    }
+                    else if (rola == "Lekarz")
+                    {   Lekarz User = new Lekarz();
+                        User.imie = imie;
+                        User.nazwisko = nazwisko;
+                        User.pesel = pesel;
+                        User.rola = rola;
+                        User.Login = L;
+                        User.specjalizacja = specjalizacja;
+                        User.PWZ = PWZ;
+                        FunkcjaLekarza(imie, nazwisko, pesel, L, rola);
+                    }
+
+                }
+                
+                else if (e==2)
+                {q = false;}
+            }            
+        }        
+    }
+}
+

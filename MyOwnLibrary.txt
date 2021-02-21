@@ -1,0 +1,74 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MyOwnLibrary
+{
+   using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+
+namespace MojaBiblioteka
+{
+
+        public abstract class Czlowiek
+        {
+            public string imie { get; set; }
+            public string nazwisko;
+            public string pesel;
+        }
+        public abstract class Uzytkownik : Czlowiek
+        {
+            public string Login;
+            public string Haslo;
+            public string rola;
+            public static void Zalogowany(string imie, string nazwisko)
+            {
+                Console.WriteLine("Jesteś zalogowany jako: " + imie + " " + nazwisko);
+
+            }
+
+            public static void Zalogowany(string imie, string nazwisko, string pesel, string login, string rola)
+            {
+                Console.Clear();
+                Console.WriteLine("Imię: " + imie + " Nazwisko: " + nazwisko + " Pesel: " + pesel + " Login: " + login + " Rola: " +  rola );
+
+                Console.WriteLine("Naciśnij dowolny przycisk aby kontynuować");
+                Console.ReadKey();
+            }
+
+
+
+        }
+        public class Lekarz : Uzytkownik
+        {
+            public string specjalizacja;
+            public string PWZ;
+           
+        }
+
+        public class Pielegniarka : Uzytkownik
+        {}
+
+        public class Administrator : Uzytkownik
+        {}
+
+    public class czywpisujeszm : Exception
+    {
+        public czywpisujeszm()
+        {
+            Console.Clear(); Console.WriteLine("Wpisałeś nieprawidłową wartość. Wpisz 'm' aby wrócić do menu ");
+        }
+    }
+
+
+
+
+
+}
+}
